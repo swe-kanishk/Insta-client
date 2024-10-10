@@ -1,32 +1,36 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import axios from "axios";
 import { toast } from "sonner";
-import { Link, useNavigate } from "react-router-dom";
 import EntrancePage from "./EntrancePage";
 import { Loader2 } from "lucide-react";
 import Logo from "./Logo";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/redux/authSlice";
 
-const Signup = () => {
+const Login = () => {
+  const {user} = useSelector(store => store.auth);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState({
-    username: "",
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
-  const signupHandler = async (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:8000/api/v1/user/register",
+        "http://localhost:8000/api/v1/user/login",
         input,
         {
           headers: {
@@ -36,9 +40,11 @@ const Signup = () => {
         }
       );
       if (res.data.success) {
+        navigate('/')
+        localStorage.setItem('token', res.data.token);
+        dispatch(setAuthUser(res.data.user))
         toast.success(res.data.message);
         setInput({
-          username: "",
           email: "",
           password: "",
         });
@@ -50,40 +56,27 @@ const Signup = () => {
       setLoading(false);
     }
   };
-
-  const { user } = useSelector((store) => store.auth);
-  const navigate = useNavigate();
   useEffect(() => {
-    if (user) {
-      navigate("/");
+    if(user) {
+      navigate('/')
     }
-  }, []);
+  }, [])
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <div className="flex items-center justify-center">
         <EntrancePage />
         <div className="flex flex-col gap-8">
           <form
-            onSubmit={signupHandler}
+            onSubmit={loginHandler}
             className="shadow-md flex flex-col gap-2 px-8 pb-8 pt-4 border-1 rounded border-gray-400 border"
           >
             <div className="py-2">
               <div className="relative w-full left-[30%]">
-                <Logo />
+              <Logo />
               </div>
               <p className="text-sm text-center text-gray-400 font-medium">
-                Sign up to see photos and videos from your friends.
+                Login to see photos and videos from your friends.
               </p>
-            </div>
-            <div>
-              <span className="font-medium">Username</span>
-              <Input
-                type="text"
-                name="username"
-                value={input.username}
-                onChange={changeEventHandler}
-                className="focus-visible:ring-transparent my-2"
-              />
             </div>
             <div>
               <span className="font-medium">Email</span>
@@ -112,14 +105,14 @@ const Signup = () => {
               </Button>
             ) : (
               <Button type="submit" className="mt-2">
-                Signup
+                Login
               </Button>
             )}
           </form>
           <div className="shadow-md flex gap-1 py-4 px-8 border-1 rounded border-gray-400 border items-center justify-center">
-            Have an account?{" "}
-            <Link to="/login" className="text-blue-600">
-              Login
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-600">
+              Signup
             </Link>
           </div>
         </div>
@@ -127,5 +120,4 @@ const Signup = () => {
     </div>
   );
 };
-
-export default Signup;
+export default Login;

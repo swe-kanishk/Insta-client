@@ -6,3 +6,17 @@
     --radius: 0.5rem
   }
 }
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 0.5s ease;
+  animation-delay: 2s;
+}
