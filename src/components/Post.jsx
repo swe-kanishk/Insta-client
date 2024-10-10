@@ -36,7 +36,7 @@ function Post({ post }) {
       const action = liked ? "dislike" : "like";
 
       const res = await axios.get(
-        `http://localhost:8000/api/v1/post/${post?._id}/${action}`,
+        `https://insta-backend-flws.onrender.com/api/v1/post/${post?._id}/${action}`,
         {
           withCredentials: true,
           headers: {
@@ -71,7 +71,7 @@ function Post({ post }) {
   const postCommentHandler = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/post/${post?._id}/comment`,
+        `https://insta-backend-flws.onrender.com/api/v1/post/${post?._id}/comment`,
         { text },
         {
           withCredentials: true,
@@ -99,7 +99,7 @@ function Post({ post }) {
   const deletePostHandler = async () => {
     try {
       const res = await axios.delete(
-        `http://localhost:8000/api/v1/post/delete/${post?._id}`,
+        `https://insta-backend-flws.onrender.com/api/v1/post/delete/${post?._id}`,
         {
           withCredentials: true,
           headers: {
@@ -120,7 +120,7 @@ function Post({ post }) {
   const savePostHandler = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/v1/post/${post?._id}/save`,
+        `https://insta-backend-flws.onrender.com/api/v1/post/${post?._id}/save`,
         {
           headers: {
             Authorization: token,

@@ -18,7 +18,7 @@ function ChatPage() {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.post(
-        `http://localhost:8000/api/v1/message/send/${recieverId}`,
+        `https://insta-backend-flws.onrender.com/api/v1/message/send/${recieverId}`,
         { textMessage },
         {
           withCredentials: true,

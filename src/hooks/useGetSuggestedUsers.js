@@ -13,7 +13,7 @@ const getSuggestedUsers = () => {
   useEffect(() => {
     const fetchSuggestedUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/user/suggested", {
+        const res = await axios.get("https://insta-backend-flws.onrender.com/api/v1/user/suggested", {
           withCredentials: true,
           headers: { Authorization : token }
         });

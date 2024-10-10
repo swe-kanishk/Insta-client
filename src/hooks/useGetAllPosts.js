@@ -11,7 +11,7 @@ const getAllPosts = () => {
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        const res = await axios.get("http://localhost:8000/api/v1/post/all", {
+        const res = await axios.get("https://insta-backend-flws.onrender.com/api/v1/post/all", {
           withCredentials: true,
           headers: { Authorization : token }
         });
