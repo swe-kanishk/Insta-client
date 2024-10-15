@@ -7,7 +7,7 @@ import {
   Search,
   TrendingUp,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "./ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Logo from "./Logo";
@@ -18,11 +18,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
 import { Button } from "./ui/button";
+import { resetNotificationUnreadCount } from "@/redux/realTimeNotificationSlice";
 
 function LeftSidebar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
+  const { totalUnreadChats } = useSelector((store) => store.chat);
   const dispatch = useDispatch();
   const logoutHandler = async () => {
     try {
@@ -40,10 +42,9 @@ function LeftSidebar() {
     }
   };
 
-  const { likeNotification } = useSelector(
+  const { likeNotification, notificationUnreadCount } = useSelector(
     (store) => store.realTimeNotification
   );
-  console.log("likeNotification", likeNotification);
 
   const sidebarItems = [
     { icon: <Home size={26} />, label: "Home" },
@@ -90,6 +91,16 @@ function LeftSidebar() {
         return setOpenNotificationBar(!openNotificationBar);
     }
   };
+  
+  useEffect(() => {
+    if (openNotificationBar) {
+      dispatch(resetNotificationUnreadCount());
+    }
+  }, [openNotificationBar]);
+
+  const { unreadMessages } = useSelector(store => store.chat);
+  const unreadUsers = unreadMessages && Object.keys(unreadMessages).filter(userId => unreadMessages[userId] > 0);
+  console.log(unreadUsers)
   return (
     <div className="flex h-full">
       <div className="flex bg-white justify-start py-8 z-50 flex-col h-screen min-w-[250px] max-w-[300px] border-r border-1">
@@ -110,15 +121,15 @@ function LeftSidebar() {
               >
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
-                {item.label === "Notifications" &&
-                  likeNotification?.length > 0 && (
+                {(item.label === "Notifications" && notificationUnreadCount) || (item.label === "Messages" && unreadUsers?.length) ? (
                     <Button
                       size="icon"
                       className="rounded-full  h-5 w-5 bg-red-600 hover:bg-red-600 absolute bottom-6 left-6"
                     >
-                      {likeNotification.length}
+                      {`${(item.label === "Notifications" && (notificationUnreadCount || ''))  || (item.label === "Messages" && (unreadUsers?.length || ''))}` }
                     </Button>
-                  )}
+                  ) : ''
+                }
               </li>
             );
           })}
@@ -135,7 +146,7 @@ function LeftSidebar() {
           likeNotification.map((notification) => {
             return (
               <div
-                key={notification.userId}
+                key={notification.postId}
                 className="flex items-center gap-2 my-2"
               >
                 <Avatar>

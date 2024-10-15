@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoMdCloseCircle } from "react-icons/io";
 import Messages from "./Messages";
 import axios from "axios";
-import { setMessages } from "@/redux/chatSlice";
+import { markMessagesAsRead, setMessages } from "@/redux/chatSlice";
 
 function ChatPage() {
-  const { user, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
+  const { user, suggestedUsers, selectedUser } = useSelector(
+    (store) => store.auth
+  );
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
@@ -38,9 +40,12 @@ function ChatPage() {
 
   useEffect(() => {
     return () => {
-      dispatch(setSelectedUser(null))
-    }
-  }, [])
+      dispatch(setSelectedUser(null));
+    };
+  }, []);
+
+  const { unreadMessages } = useSelector((store) => store.chat);
+
   return (
     <div className="flex h-screen">
       <section className="w-full md:w-1/4 my-8">
@@ -49,10 +54,17 @@ function ChatPage() {
         <div className="h-[80vh] overflow-y-auto">
           {suggestedUsers.map((suggestedUser) => {
             const isOnline = onlineUsers?.includes(suggestedUser?._id);
+            const isUnreadMessages =
+              unreadMessages?.hasOwnProperty(`${suggestedUser?._id}`) &&
+              unreadMessages[`${suggestedUser?._id}`];
+            console.log("isUnreadMessages", isUnreadMessages);
             return (
               <div
-              key={suggestedUser?._id}
-                onClick={() => dispatch(setSelectedUser(suggestedUser))}
+                key={suggestedUser?._id}
+                onClick={() => {
+                  dispatch(setSelectedUser(suggestedUser));
+                  dispatch(markMessagesAsRead({ userId: suggestedUser?._id }));
+                }}
                 className="flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer"
               >
                 <Avatar className="w-[4rem] h-[4rem] rounded-full overflow-hidden">
@@ -64,14 +76,20 @@ function ChatPage() {
                     />
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col">
+                <div className="flex flex-col flex-1">
                   <span className="font-medium">{suggestedUser?.username}</span>
                   <span
-                    className={`${
+                    className={`flex gap-6 w-full ${
                       isOnline ? "text-green-600" : "text-red-600"
                     } text-xs font-bold`}
                   >
                     {isOnline ? "online" : "offline"}
+                    <span className="text-gray-500 font-medium">
+                      {isUnreadMessages &&
+                        `${isUnreadMessages} new ${
+                          isUnreadMessages > 1 ? "messages" : "message"
+                        }!`}
+                    </span>
                   </span>
                 </div>
               </div>
