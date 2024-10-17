@@ -1,17 +1,27 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGetAllMessages from "../hooks/UseGetAllMessages.js";
 import useGetRealTimeMessages from "@/hooks/useGetRealTimeMessages";
+import { setMessages } from "@/redux/chatSlice";
+import { setLikeNotification } from "@/redux/realTimeNotificationSlice";
 
 function Messages({ selectedUser }) {
-  useGetRealTimeMessages()
   useGetAllMessages();
+
   const { messages } = useSelector((store) => store.chat);
   const { user } = useSelector(store => store.auth)
-  
+
+  const dispatch = useDispatch();
+  console.log('messages', messages)
+  useEffect(() => {
+    return () => {
+      dispatch(setMessages([]))
+      dispatch(setLikeNotification([]))
+    }
+  }, [selectedUser])
   return (
     <div className="overflow-y-auto flex-1 p-4">
       <div className="flex justify-center">

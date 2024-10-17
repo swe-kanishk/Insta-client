@@ -9,9 +9,7 @@ import axios from "axios";
 import { markMessagesAsRead, setMessages } from "@/redux/chatSlice";
 
 function ChatPage() {
-  const { user, suggestedUsers, selectedUser } = useSelector(
-    (store) => store.auth
-  );
+  const { user, suggestedUsers, selectedUser } = useSelector((store) => store.auth);
   const { onlineUsers, messages } = useSelector((store) => store.chat);
   const [textMessage, setTextMessage] = useState("");
   const dispatch = useDispatch();
@@ -40,11 +38,11 @@ function ChatPage() {
 
   useEffect(() => {
     return () => {
-      dispatch(setSelectedUser(null));
-    };
-  }, []);
+      dispatch(setSelectedUser(null))
+    }
+  }, [dispatch])
 
-  const { unreadMessages } = useSelector((store) => store.chat);
+  const { unreadMessages } = useSelector(store => store.chat);
 
   return (
     <div className="flex h-screen">
@@ -54,16 +52,13 @@ function ChatPage() {
         <div className="h-[80vh] overflow-y-auto">
           {suggestedUsers.map((suggestedUser) => {
             const isOnline = onlineUsers?.includes(suggestedUser?._id);
-            const isUnreadMessages =
-              unreadMessages?.hasOwnProperty(`${suggestedUser?._id}`) &&
-              unreadMessages[`${suggestedUser?._id}`];
-            console.log("isUnreadMessages", isUnreadMessages);
+            const isUnreadMessages = unreadMessages?.hasOwnProperty(`${suggestedUser?._id}`) && unreadMessages[`${suggestedUser?._id}`];
             return (
               <div
-                key={suggestedUser?._id}
+              key={suggestedUser?._id}
                 onClick={() => {
-                  dispatch(setSelectedUser(suggestedUser));
-                  dispatch(markMessagesAsRead({ userId: suggestedUser?._id }));
+                  dispatch(setSelectedUser(suggestedUser))
+                  dispatch(markMessagesAsRead({userId: suggestedUser?._id}))
                 }}
                 className="flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer"
               >
@@ -84,12 +79,7 @@ function ChatPage() {
                     } text-xs font-bold`}
                   >
                     {isOnline ? "online" : "offline"}
-                    <span className="text-gray-500 font-medium">
-                      {isUnreadMessages &&
-                        `${isUnreadMessages} new ${
-                          isUnreadMessages > 1 ? "messages" : "message"
-                        }!`}
-                    </span>
+                    <span className="text-gray-500 font-medium">{isUnreadMessages &&  `${isUnreadMessages} new ${isUnreadMessages > 1 ? 'messages' : 'message'}!`}</span>
                   </span>
                 </div>
               </div>

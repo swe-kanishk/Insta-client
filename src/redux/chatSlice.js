@@ -8,6 +8,7 @@ const chatSlice = createSlice({
         unreadMessages: {},
     },
     reducers: {
+        
         setOnlineUsers: (state, action) => {
             state.onlineUsers = action.payload
         },

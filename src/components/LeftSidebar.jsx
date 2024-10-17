@@ -19,8 +19,11 @@ import { setAuthUser } from "@/redux/authSlice";
 import CreatePost from "./CreatePost";
 import { Button } from "./ui/button";
 import { resetNotificationUnreadCount } from "@/redux/realTimeNotificationSlice";
+import useGetRealTimeMessages from "@/hooks/useGetRealTimeMessages";
 
 function LeftSidebar() {
+  useGetRealTimeMessages()
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useSelector((store) => store.auth);
@@ -100,7 +103,7 @@ function LeftSidebar() {
 
   const { unreadMessages } = useSelector(store => store.chat);
   const unreadUsers = unreadMessages && Object.keys(unreadMessages).filter(userId => unreadMessages[userId] > 0);
-  console.log(unreadUsers)
+
   return (
     <div className="flex h-full">
       <div className="flex bg-white justify-start py-8 z-50 flex-col h-screen min-w-[250px] max-w-[300px] border-r border-1">

@@ -1,7 +1,7 @@
 import getUserProfile from "@/hooks/useGetUserProfile";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { TbSettingsFilled } from "react-icons/tb";
 import { IoCameraOutline } from "react-icons/io5";
@@ -12,6 +12,7 @@ import { LuContact2 } from "react-icons/lu";
 import { FaRegBookmark } from "react-icons/fa";
 import { Heart } from "lucide-react";
 import { FaComment } from "react-icons/fa6";
+import { setUserProfile } from "@/redux/authSlice";
 
 function Profile() {
   const [open, setOpen] = useState(false);
@@ -23,6 +24,13 @@ function Profile() {
   const { userProfile, user } = useSelector((store) => store.auth);
   const isLoggedInUSerProfile = userProfile?._id === user?._id;
   const isFollowing = true;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(setUserProfile(null))
+    }
+  },[])
 
   return (
     <div className="flex flex-col max-w-5xl h-screen mx-auto items-start justify-start py-6">

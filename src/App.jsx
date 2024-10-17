@@ -68,6 +68,7 @@ function App() {
       });
 
       socketio.on('notification', (notification) => {
+        console.log('new notification', notification)
         dispatch(setLikeNotification(notification))
       });
 

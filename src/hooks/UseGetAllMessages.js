@@ -19,7 +19,7 @@ const getAllMessages = () => {
           }
         );
         if (res.data.success) {
-            console.log('response is ', res.data)
+          console.log('response is ', res.data)
           dispatch(setMessages(res.data.messages));
         }
       } catch (error) {
